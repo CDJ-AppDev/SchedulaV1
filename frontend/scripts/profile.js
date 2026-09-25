@@ -500,3 +500,92 @@ if (deleteAccountBtn) {
   });
 }
 
+// ----------------- PART 4: AVAILABILITY PREFERENCES -----------------
+let blockedTimes = [];
+
+async function loadPreferences() {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_BASE}/preferences`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      blockedTimes = data.blockedTimes || [];
+      renderBlockedTimes();
+    }
+  } catch (err) {
+    console.error('Error loading preferences:', err);
+  }
+}
+
+function renderBlockedTimes() {
+  const list = document.getElementById('availability-list');
+  if (!list) return;
+  list.innerHTML = '';
+  blockedTimes.forEach((block, index) => {
+    const item = document.createElement('div');
+    item.style.display = 'flex';
+    item.style.justifyContent = 'space-between';
+    item.style.padding = '8px';
+    item.style.backgroundColor = 'var(--surface)';
+    item.style.border = '1px solid var(--border)';
+    item.style.color = 'var(--text)';
+    item.style.borderRadius = '4px';
+    item.innerHTML = `
+      <span>${block.day}: ${block.startTime} - ${block.endTime}</span>
+      <button onclick="removeBlockedTime(${index})" style="background:none; border:none; color:red; cursor:pointer; font-weight: bold;">&times;</button>
+    `;
+    list.appendChild(item);
+  });
+  localStorage.setItem('blockedTimes', JSON.stringify(blockedTimes));
+}
+
+window.removeBlockedTime = function(index) {
+  blockedTimes.splice(index, 1);
+  renderBlockedTimes();
+};
+
+const addAvailBtn = document.getElementById('add-avail-btn');
+const saveAvailBtn = document.getElementById('save-avail-btn');
+
+if (addAvailBtn) {
+  addAvailBtn.addEventListener('click', () => {
+    const day = document.getElementById('avail-day').value;
+    const startTime = document.getElementById('avail-start').value;
+    const endTime = document.getElementById('avail-end').value;
+    if (day && startTime && endTime) {
+      blockedTimes.push({ day, startTime, endTime });
+      renderBlockedTimes();
+    }
+  });
+}
+
+if (saveAvailBtn) {
+  saveAvailBtn.addEventListener('click', async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE}/preferences`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ blockedTimes })
+      });
+      if (response.ok) {
+        alert('Preferences saved successfully!');
+      } else {
+        alert('Failed to save preferences');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error saving preferences');
+    }
+  });
+}
+
+// Call loadPreferences on page load
+document.addEventListener('DOMContentLoaded', () => {
+  loadPreferences();
+});

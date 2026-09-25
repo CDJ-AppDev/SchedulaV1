@@ -107,6 +107,13 @@ CREATE TABLE IF NOT EXISTS REFRESH_TOKENS (
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create USER_PREFERENCES table
+CREATE TABLE IF NOT EXISTS USER_PREFERENCES (
+    UserID INT PRIMARY KEY REFERENCES USER_CREDENTIALS(UserID) ON DELETE CASCADE,
+    BlockedTimes JSONB DEFAULT '[]'::jsonb,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- -------------------------------------------------------------------
 -- Indexes (performance + foreign-key join support)
 -- -------------------------------------------------------------------

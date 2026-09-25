@@ -57,4 +57,23 @@ router.delete('/user/profile', authenticateToken, asyncHandler(async (req, res) 
   }
 }));
 
+router.get('/preferences', authenticateToken, asyncHandler(async (req, res) => {
+  try {
+    const prefs = await userService.getUserPreferences(req.user.user_id);
+    res.json(prefs);
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message || 'Server error fetching preferences' });
+  }
+}));
+
+router.put('/preferences', authenticateToken, asyncHandler(async (req, res) => {
+  const { blockedTimes } = req.body;
+  try {
+    const prefs = await userService.updateUserPreferences(req.user.user_id, blockedTimes || []);
+    res.json({ message: 'Preferences updated successfully', preferences: prefs });
+  } catch (error) {
+    res.status(error.status || 400).json({ error: error.message || 'Error updating preferences' });
+  }
+}));
+
 module.exports = router;

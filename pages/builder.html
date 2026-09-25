@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schedule Builder - ASB</title>
+  <title>Schedule Builder - Schedula</title>
   <link rel="icon" type="image/png" href="../favicon.png">
   <link rel="stylesheet" href="../frontend/css/main.css">
   <link rel="stylesheet" href="../frontend/css/builder.css">
@@ -14,11 +14,9 @@
 <body>
   <header class="app-header">
     <div class="app-brand">
-      <img src="../assets/logo.png" alt="Academic Schedule Builder" class="brand-icon">
+      <img src="../assets/logo.png" alt="Schedula" class="brand-icon">
       <div class="brand-text">
-        <span>Academic</span>
-        <span>Schedule</span>
-        <span>Builder</span>
+        <span>Schedula</span>
       </div>
     </div>
 
@@ -57,14 +55,63 @@
     </div>
 
     <section class="page-panel">
-      <h2>Available Classes</h2>
+      <h2 style="margin-bottom: 1.5rem;">Import Classes</h2>
 
-      <div id="availableCourses" class="courses-list single-column"></div>
+      <div class="course-card irregular-course">
+        <div class="course-card-header irregular-header" onclick="toggleDropdown('importDropdown','importArrow')">
+          <h3>Import Multiple Classes</h3>
+          <img src="../assets/dropdown.png" alt="Toggle" class="arrow" id="importArrow"
+            style="width: 14px; height: 14px; object-fit: contain; transition: transform 0.3s ease;">
+        </div>
 
-      <!-- dynamic courses loaded from API -->
-      <script>
-        // DB-rendered UI below will populate #availableCourses
-      </script>
+        <div class="course-card-body no-padding">
+          <div class="dropdown" id="importDropdown">
+            <div style="padding: 15px; overflow-x: auto;">
+              <table id="import-table"
+                style="width: 100%; border-collapse: separate; border-spacing: 0; min-width: 700px; margin-bottom: 20px;">
+                <thead>
+                  <tr style="text-align: left;">
+                    <th
+                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
+                      Code</th>
+                    <th
+                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
+                      Name</th>
+                    <th
+                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600; width: 60px;">
+                      Units</th>
+                    <th
+                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
+                      Teacher</th>
+                    <th
+                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
+                      Room</th>
+                    <th
+                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
+                      Day</th>
+                    <th
+                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
+                      Start</th>
+                    <th
+                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
+                      End</th>
+                    <th style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); width: 40px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="import-table-body">
+                  <!-- Dynamic rows go here -->
+                </tbody>
+              </table>
+              <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <button id="add-import-row-btn" class="btn-primary" type="button"
+                  style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">+
+                  Add Row</button>
+                <button id="import-classes-btn" class="btn-primary" type="button">Import All</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <script>
         function toggleDropdown(dropdownId, arrowId) {
@@ -72,23 +119,14 @@
           const arrow = document.getElementById(arrowId);
 
           if (dropdown.style.maxHeight === "0px" || dropdown.style.maxHeight === "") {
-            // Close other available course dropdowns to reduce clutter
-            const availableCoursesList = document.getElementById('availableCourses');
-            if (availableCoursesList) {
-              const otherCards = availableCoursesList.querySelectorAll('.available-course-group');
-              otherCards.forEach(card => {
-                const otherDropdown = card.querySelector('.dropdown');
-                const otherHeader = card.querySelector('.available-course-header');
-                const otherArrow = card.querySelector('.arrow');
-                if (otherDropdown && otherDropdown.classList.contains('active')) {
-                  otherDropdown.classList.remove('active');
-                  otherDropdown.style.maxHeight = '0';
-                  if (otherHeader) otherHeader.classList.remove('active');
-                  if (otherArrow) otherArrow.style.transform = 'rotate(0deg)';
-                }
-              });
+            const importDropdown = document.getElementById('importDropdown');
+            const importArrow = document.getElementById('importArrow');
+            if (importDropdown && importDropdown !== dropdown && importDropdown.style.maxHeight !== '0px' && importDropdown.style.maxHeight !== '') {
+              importDropdown.style.maxHeight = '0';
+              if (importArrow) importArrow.style.transform = 'rotate(0deg)';
             }
-            dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+
+            dropdown.style.maxHeight = dropdown.scrollHeight + 500 + "px"; // +500 to allow room for rows
             arrow.style.transform = "rotate(180deg)";
           } else {
             dropdown.style.maxHeight = "0";
@@ -97,75 +135,14 @@
         }
       </script>
 
-      <div class="course-card irregular-course">
-        <div class="course-card-header irregular-header" onclick="toggleDropdown('irregularDropdown','irregularArrow')">
-          <h3>Add Irregular Course</h3>
-          <img src="../assets/dropdown.png" alt="Toggle" class="arrow" id="irregularArrow"
-            style="width: 14px; height: 14px; object-fit: contain; transition: transform 0.3s ease;">
-        </div>
-
-        <div class="course-card-body no-padding">
-          <div class="dropdown" id="irregularDropdown">
-            <div class="course-form">
-              <div class="form-group">
-                <label for="course-code">Course Code:</label>
-                <input type="text" id="course-code" placeholder="e.g., CS101" required>
-              </div>
-
-              <div class="form-group">
-                <label for="course-name">Course Name:</label>
-                <input type="text" id="course-name" placeholder="e.g., Intro to Programming" required>
-              </div>
-
-              <div class="form-group">
-                <label for="course-units">Units:</label>
-                <input type="number" id="course-units" placeholder="e.g., 3" required>
-              </div>
-
-              <div class="form-group">
-                <label for="teacher-name">Teacher Name:</label>
-                <input type="text" id="teacher-name" placeholder="e.g., Prof. Garcia" required>
-              </div>
-
-              <div class="form-group">
-                <label for="room-code">Room Code:</label>
-                <input type="text" id="room-code" placeholder="e.g., CL1, WH301, or TBA" required>
-              </div>
-
-              <div class="form-group">
-                <label for="schedule-day">Day:</label>
-                <select id="schedule-day" required>
-                  <option value="">Select Day</option>
-                  <option value="Monday">Monday</option>
-                  <option value="Tuesday">Tuesday</option>
-                  <option value="Wednesday">Wednesday</option>
-                  <option value="Thursday">Thursday</option>
-                  <option value="Friday">Friday</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="start-time">Start Time:</label>
-                <input type="time" id="start-time" required>
-              </div>
-
-              <div class="form-group">
-                <label for="end-time">End Time:</label>
-                <input type="time" id="end-time" required>
-              </div>
-
-              <button id="add-course-btn" class="btn-primary" type="button">Add Course</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div class="spacer-20"></div>
 
       <div class="schedules-header-container">
         <h2 class="schedules-title">Schedules</h2>
         <div class="flex-center-gap">
-          <button id="delete-schedule-btn" class="btn-remove btn-delete-schedule"><img src="../assets/delete.png" alt="Delete" class="btn-icon"> DELETE</button>
+          <button id="delete-schedule-btn" class="btn-remove btn-delete-schedule"><img src="../assets/delete.png"
+              alt="Delete" class="btn-icon"> DELETE</button>
           <select id="schedule-selector" class="schedule-selector">
             <option value="new">+ Create New Schedule</option>
           </select>
@@ -180,7 +157,8 @@
           <span id="schedule-units-display" class="units-display">Units: 0 / 0</span>
           <span id="regular-status-badge" class="schedule-status-badge"></span>
         </div>
-        <button id="save-schedule-btn" class="btn-primary btn-save" type="button"><img src="../assets/save.png" alt="Save" class="btn-icon"> SAVE</button>
+        <button id="save-schedule-btn" class="btn-primary btn-save" type="button"><img src="../assets/save.png"
+            alt="Save" class="btn-icon"> SAVE</button>
       </div>
     </section>
   </main>

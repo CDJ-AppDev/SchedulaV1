@@ -23,7 +23,7 @@ const API_BASE = window.APP_CONFIG ? window.APP_CONFIG.API_BASE : 'http://localh
 
   window.fetch = async function (resource, options = {}) {
     const url = typeof resource === 'string' ? resource : (resource.url || '');
-    
+
     // Avoid intercepting login, signup, refresh, or logout calls to prevent recursive infinite loops
     if (url.includes('/api/login') || url.includes('/api/signup') || url.includes('/api/refresh') || url.includes('/api/logout')) {
       return originalFetch(resource, options);
@@ -46,7 +46,7 @@ const API_BASE = window.APP_CONFIG ? window.APP_CONFIG.API_BASE : 'http://localh
 
       if (!isRefreshing) {
         isRefreshing = true;
-        
+
         try {
           const refreshRes = await originalFetch(`${API_BASE}/refresh`, {
             method: 'POST',
@@ -60,7 +60,7 @@ const API_BASE = window.APP_CONFIG ? window.APP_CONFIG.API_BASE : 'http://localh
             if (refreshData.refreshToken) {
               localStorage.setItem('refreshToken', refreshData.refreshToken);
             }
-            
+
             isRefreshing = false;
             onTokenRefreshed(refreshData.token);
 
@@ -91,7 +91,7 @@ const API_BASE = window.APP_CONFIG ? window.APP_CONFIG.API_BASE : 'http://localh
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('user');
-            
+
             // Redirect to login page if we are not already on an auth page
             const pathname = window.location.pathname;
             const isLandingOrAuth = pathname.endsWith('/') || pathname.includes('index.html') || pathname.includes('login.html') || pathname.includes('signup.html');
@@ -533,7 +533,7 @@ if (forgotSubmitBtn) {
 
       if (response.status === 404 || (data && data.exists === false)) {
         forgotSubmitBtn.disabled = false;
-        forgotSubmitBtn.textContent = 'Send Reset PIN →';
+        forgotSubmitBtn.textContent = 'Send Reset PIN';
         if (window.confirmPopup) {
           window.confirmPopup(
             'This email address is not registered in our database. Would you like to sign up for a new account?',
@@ -563,12 +563,12 @@ if (forgotSubmitBtn) {
       } else {
         showMessage(data.error || 'Failed to submit reset request.', true);
         forgotSubmitBtn.disabled = false;
-        forgotSubmitBtn.textContent = 'Send Reset PIN →';
+        forgotSubmitBtn.textContent = 'Send Reset PIN';
       }
     } catch (err) {
       showMessage('An error occurred. Please try again.', true);
       forgotSubmitBtn.disabled = false;
-      forgotSubmitBtn.textContent = 'Send Reset PIN →';
+      forgotSubmitBtn.textContent = 'Send Reset PIN';
     }
   });
 }
@@ -624,12 +624,12 @@ if (resetSubmitBtn) {
       } else {
         showMessage(data.error || 'Failed to reset password.', true);
         resetSubmitBtn.disabled = false;
-        resetSubmitBtn.textContent = 'Reset Password →';
+        resetSubmitBtn.textContent = 'Reset Password';
       }
     } catch (err) {
       showMessage('An error occurred. Please try again.', true);
       resetSubmitBtn.disabled = false;
-      resetSubmitBtn.textContent = 'Reset Password →';
+      resetSubmitBtn.textContent = 'Reset Password';
     }
   });
 }

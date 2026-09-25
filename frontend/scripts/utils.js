@@ -1,5 +1,5 @@
 // ============================================================
-// Shared Academic Schedule Builder Utilities & Configurations
+// Shared Schedula Utilities & Configurations
 // ============================================================
 
 // 1. Environment-specific API Configuration

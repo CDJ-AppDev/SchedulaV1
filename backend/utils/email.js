@@ -43,12 +43,12 @@ if (smtpConfigured && nodemailer) {
  */
 async function sendResetPinEmail(to, pin) {
   const fromEmail = SMTP.FROM;
-  
+
   const textContent = `You requested a password reset. Please use the following 6-digit PIN to reset your password:\n\n${pin}\n\nThis PIN will expire in 1 hour. If you did not request this, please ignore this email.`;
-  
+
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff;">
-      <h2 style="color: #333333; text-align: center;">Academic Schedule Builder</h2>
+      <h2 style="color: #333333; text-align: center;">Schedula</h2>
       <hr style="border: none; border-top: 1px solid #eeeeee;" />
       <p style="color: #666666; font-size: 16px;">Hello,</p>
       <p style="color: #666666; font-size: 16px;">We received a request to reset your password. Please use the secure 6-digit verification PIN below to reset your password:</p>
@@ -64,7 +64,7 @@ async function sendResetPinEmail(to, pin) {
 
   if (smtpConfigured && transporter) {
     await transporter.sendMail({
-      from: `"Academic Schedule Builder" <${fromEmail}>`,
+      from: `"Schedula" <${fromEmail}>`,
       to,
       subject: 'Reset your password - Verification PIN',
       text: textContent,

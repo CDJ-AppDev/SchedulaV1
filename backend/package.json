@@ -1,7 +1,7 @@
 {
   "name": "scheduler-db",
   "version": "1.0.0",
-  "description": "Database for academic schedule builder",
+  "description": "Database for Schedula",
   "main": "server.js",
   "scripts": {
     "start": "node db-server.js"

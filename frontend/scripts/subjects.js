@@ -115,6 +115,25 @@ function doTimesOverlap(start1, end1, start2, end2) {
  * @returns {Object} Conflict status object with descriptive fields
  */
 function checkScheduleConflict(newDay, newStartTime, newEndTime) {
+  // Check against user preferences blocked times
+  let blockedTimes = [];
+  try {
+    blockedTimes = JSON.parse(localStorage.getItem('blockedTimes')) || [];
+  } catch (e) {}
+
+  for (let block of blockedTimes) {
+    if (block.day.toLowerCase() === newDay.toLowerCase()) {
+      if (doTimesOverlap(block.startTime, block.endTime, newStartTime, newEndTime)) {
+        return {
+          conflict: true,
+          conflictingCourse: 'Unavailable Time (Preference)',
+          conflictingDay: block.day,
+          conflictingTime: `${block.startTime} - ${block.endTime}`
+        };
+      }
+    }
+  }
+
   for (let course of courses) {
     let courseDay, courseStartTime, courseEndTime;
 
@@ -147,247 +166,12 @@ function checkScheduleConflict(newDay, newStartTime, newEndTime) {
   return { conflict: false };
 }
 
-/**
- * Fetches available program courses from the backend database.
- * Filters matching the user's active Term ID.
- */
 async function loadAvailableCourses() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    availableCoursesList.innerHTML = '<p class="text-muted-light">Please login first.</p>';
-    return;
-  }
-
-  try {
-    const termData = await getTermData(token);
-    if (!termData) {
-      availableCoursesList.innerHTML = '<p class="text-muted-light">Please select a program first.</p>';
-      return;
-    }
-
-    const termId = termData.program_id + termData.year_level;
-    currentTermId = termId;
-
-    const response = await fetch(`${API_BASE}/courses`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-
-    const allCourses = await response.json();
-
-    // Limit visibility to matching year/course tracks
-    availableCourses = allCourses.filter(course => `${course.program_id}${course.year_level}` === termId);
-
-    // Filter out course slots that have already been scheduled
-    const addedCourseCodes = new Set();
-    courses.forEach(c => {
-      if (c.courseCode) addedCourseCodes.add(c.courseCode);
-      else if (c.code) addedCourseCodes.add(c.code);
-    });
-
-    availableCourses = availableCourses.filter(c => !addedCourseCodes.has(c.code));
-
-    displayAvailableCourses();
-  } catch (error) {
-    console.error('Error loading courses:', error);
-    availableCoursesList.innerHTML = '<p class="text-muted-light">Error loading courses.</p>';
-  }
+  // Available courses are now manually imported by the user.
 }
 
-/**
- * Renders available courses inside dynamic card groups.
- * Handles dropdown toggles and morphs borders dynamically for a cohesive UI.
- */
-function displayAvailableCourses() {
-  availableCoursesList.innerHTML = '';
-
-  if (!availableCourses || availableCourses.length === 0) {
-    availableCoursesList.innerHTML = '<p class="text-muted-light">No more available courses for your term.</p>';
-    return;
-  }
-
-  const courseGroups = {};
-  availableCourses.forEach((courseData) => {
-    const key = `${courseData.code}||${courseData.name}`;
-    if (!courseGroups[key]) {
-      courseGroups[key] = {
-        code: courseData.code,
-        name: courseData.name,
-        sections: []
-      };
-    }
-    courseGroups[key].sections.push(courseData);
-  });
-
-  Object.values(courseGroups).forEach((course) => {
-    const courseCard = document.createElement('div');
-    courseCard.className = 'available-course-group';
-
-    const courseHeader = document.createElement('div');
-    courseHeader.className = 'available-course-header';
-
-    const titleEl = document.createElement('h3');
-    titleEl.textContent = `${course.code} - ${course.name}`;
-    titleEl.className = 'available-course-title';
-
-    const arrowEl = document.createElement('img');
-    arrowEl.className = 'arrow';
-    arrowEl.src = '../assets/dropdown.png';
-    arrowEl.alt = 'Toggle';
-    arrowEl.style.width = '14px';
-    arrowEl.style.height = '14px';
-    arrowEl.style.objectFit = 'contain';
-    arrowEl.style.transition = 'transform 0.3s ease';
-
-    courseHeader.appendChild(titleEl);
-    courseHeader.appendChild(arrowEl);
-
-    const dropdown = document.createElement('div');
-    dropdown.className = 'dropdown';
-
-    courseHeader.addEventListener('click', () => {
-      const isOpen = dropdown.classList.contains('active');
-      if (!isOpen) {
-        // Close other available course dropdowns to reduce clutter
-        const otherCards = availableCoursesList.querySelectorAll('.available-course-group');
-        otherCards.forEach(card => {
-          const otherDropdown = card.querySelector('.dropdown');
-          const otherHeader = card.querySelector('.available-course-header');
-          const otherArrow = card.querySelector('.arrow');
-          if (otherDropdown && otherDropdown !== dropdown && otherDropdown.classList.contains('active')) {
-            otherDropdown.classList.remove('active');
-            otherDropdown.style.maxHeight = '0';
-            if (otherHeader) otherHeader.classList.remove('active');
-            if (otherArrow) otherArrow.style.transform = 'rotate(0deg)';
-          }
-        });
-
-        // Also close the irregular course dropdown if open
-        const irregularDropdown = document.getElementById('irregularDropdown');
-        const irregularArrow = document.getElementById('irregularArrow');
-        if (irregularDropdown && irregularDropdown.style.maxHeight !== '0px' && irregularDropdown.style.maxHeight !== '') {
-          irregularDropdown.style.maxHeight = '0';
-          if (irregularArrow) irregularArrow.style.transform = 'rotate(0deg)';
-        }
-      }
-
-      const newOpenState = dropdown.classList.toggle('active');
-      arrowEl.style.transform = newOpenState ? 'rotate(180deg)' : 'rotate(0deg)';
-      dropdown.style.maxHeight = newOpenState ? `${dropdown.scrollHeight}px` : '0';
-      if (newOpenState) {
-        courseHeader.classList.add('active');
-      } else {
-        courseHeader.classList.remove('active');
-      }
-    });
-
-    course.sections.forEach((section, index) => {
-      const sectionCard = document.createElement('div');
-      sectionCard.className = 'course-card irregular-course-card';
-      sectionCard.style.marginTop = index === 0 ? '8px' : '12px';
-      sectionCard.innerHTML = `
-        <div class="course-card-body card-body-flex">
-          <div>
-            <p class="card-text-main">Professor: ${section.teacher?.name ?? 'TBD'}</p>
-            <p class="card-text-sub">Schedule: ${section.schedule?.day ?? 'TBD'} ${section.schedule?.startTime ? `| ${section.schedule.startTime} - ${section.schedule.endTime}` : ''} ${section.schedule?.room ? `| Room: ${section.schedule.room}` : ''}</p>
-          </div>
-          <button class="btn-add btn-add-inline" type="button"><svg class="btn-icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width: 13px; height: 13px; margin-right: 4px; display: inline-block; vertical-align: -1px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>Add</button>
-        </div>
-      `;
-
-      const addButton = sectionCard.querySelector('button');
-      addButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        
-        // Disable button to prevent double-click
-        addButton.disabled = true;
-        addButton.style.opacity = '0.5';
-        
-        // Emil Design: Snappy, hardware-accelerated exit animation for removal
-        sectionCard.style.overflow = 'hidden';
-        const startHeight = sectionCard.offsetHeight;
-        
-        sectionCard.animate([
-          { opacity: 1, transform: 'scale(1)', height: startHeight + 'px', marginTop: sectionCard.style.marginTop },
-          { opacity: 0, transform: 'scale(0.95)', height: '0px', marginTop: '0px' }
-        ], {
-          duration: 180, // Snappy < 300ms UI animation
-          easing: 'cubic-bezier(0.23, 1, 0.32, 1)', // Strong ease-out
-          fill: 'forwards'
-        }).onfinish = () => {
-          addAvailableCourse(section.courseslot_id);
-        };
-      });
-
-      dropdown.appendChild(sectionCard);
-    });
-
-    courseCard.appendChild(courseHeader);
-    courseCard.appendChild(dropdown);
-    availableCoursesList.appendChild(courseCard);
-  });
-
-  if (!document.getElementById('subject-schedule-inline-style')) {
-    const style = document.createElement('style');
-    style.id = 'subject-schedule-inline-style';
-    style.textContent = `.dropdown.active{max-height:800px;} .arrow.rotate{transform:rotate(180deg);}`;
-    document.head.appendChild(style);
-  }
-}
-
-/**
- * Transfers a formal department course from the available repository to the user's active schedule workspace.
- * Audits time bounds to prevent overlapping slot selections.
- * @param {number} courseslotId - Unique key of the section
- */
-function addAvailableCourse(courseslotId) {
-  const courseData = availableCourses.find(c => c.courseslot_id == courseslotId);
-  if (!courseData) {
-    console.error('Target course section not found:', courseslotId);
-    return;
-  }
-
-  const conflictCheck = checkScheduleConflict(
-    courseData.schedule?.day,
-    courseData.schedule?.startTime,
-    courseData.schedule?.endTime
-  );
-
-  if (conflictCheck.conflict) {
-    alert(
-      `⚠️ Scheduling Conflict Detected!\n\n` +
-      `This course conflicts with:\n` +
-      `Course: ${conflictCheck.conflictingCourse}\n` +
-      `Day: ${conflictCheck.conflictingDay}\n` +
-      `Time: ${conflictCheck.conflictingTime}\n\n` +
-      `Please choose a different section or remove the conflicting course.`
-    );
-    return;
-  }
-
-  const formattedCourse = {
-    course_id: courseData.course_id,
-    courseslot_id: courseData.courseslot_id,
-    code: courseData.code,
-    name: courseData.name,
-    units: courseData.units,
-    program_id: courseData.program_id,
-    teacher_name: courseData.teacher?.name,
-    schedule: {
-      day: courseData.schedule?.day,
-      startTime: courseData.schedule?.startTime,
-      endTime: courseData.schedule?.endTime,
-      room: courseData.schedule?.room
-    }
-  };
-
-  courses.push(formattedCourse);
-  availableCourses = availableCourses.filter(c => c.code !== courseData.code);
-  displayAvailableCourses();
-  displayCourses();
-
-  // Show success confirmation popup
-  alert(`${courseData.code} — ${courseData.name} has been added to your schedule.`, 'Course Added!');
-}
+function displayAvailableCourses() {}
+function addAvailableCourse(courseslotId) {}
 
 /**
  * Renders the scheduled courses list.
@@ -834,3 +618,100 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// ----------------- IMPORT CLASSES LOGIC -----------------
+const importTableBody = document.getElementById('import-table-body');
+const addImportRowBtn = document.getElementById('add-import-row-btn');
+const importClassesBtn = document.getElementById('import-classes-btn');
+
+function createImportRow() {
+  const tr = document.createElement('tr');
+  const inputStyle = 'width: 100%; padding: 6px; background: var(--input-bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px;';
+  tr.innerHTML = `
+    <td style="padding: 4px;"><input type="text" class="import-input" placeholder="Code" style="${inputStyle}"></td>
+    <td style="padding: 4px;"><input type="text" class="import-input" placeholder="Name" style="${inputStyle}"></td>
+    <td style="padding: 4px;"><input type="number" class="import-input" placeholder="3" style="${inputStyle}"></td>
+    <td style="padding: 4px;"><input type="text" class="import-input" placeholder="Prof" style="${inputStyle}"></td>
+    <td style="padding: 4px;"><input type="text" class="import-input" placeholder="Room" style="${inputStyle}"></td>
+    <td style="padding: 4px;">
+      <select class="import-input" style="${inputStyle}">
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <option value="Saturday">Saturday</option>
+      </select>
+    </td>
+    <td style="padding: 4px;"><input type="time" class="import-input" style="${inputStyle}"></td>
+    <td style="padding: 4px;"><input type="time" class="import-input" style="${inputStyle}"></td>
+    <td style="padding: 4px; text-align: center;"><button type="button" class="btn-remove-import-row" style="background: none; border: none; color: var(--text); font-weight: bold; cursor: pointer;">&times;</button></td>
+  `;
+  tr.querySelector('.btn-remove-import-row').addEventListener('click', () => tr.remove());
+  return tr;
+}
+
+if (addImportRowBtn && importTableBody) {
+  addImportRowBtn.addEventListener('click', () => {
+    importTableBody.appendChild(createImportRow());
+  });
+  // add a default row initially
+  importTableBody.appendChild(createImportRow());
+}
+
+if (importClassesBtn && importTableBody) {
+  importClassesBtn.addEventListener('click', () => {
+    const rows = importTableBody.querySelectorAll('tr');
+    let importedCount = 0;
+    
+    rows.forEach(row => {
+      const inputs = row.querySelectorAll('.import-input');
+      const code = inputs[0].value.trim();
+      const name = inputs[1].value.trim();
+      const units = parseInt(inputs[2].value || "0", 10);
+      const teacher = inputs[3].value.trim() || 'TBA';
+      const room = inputs[4].value.trim() || 'TBA';
+      const day = inputs[5].value;
+      const start = inputs[6].value;
+      const end = inputs[7].value;
+
+      if (!code || !name || !day || !start || !end) {
+        return; // Skip incomplete rows silently
+      }
+
+      // Check conflicts
+      const conflictCheck = checkScheduleConflict(day, start, end);
+      if (conflictCheck.conflict) {
+        alert(
+          `Conflict for ${code}: overlaps with ${conflictCheck.conflictingCourse} on ${conflictCheck.conflictingDay} (${conflictCheck.conflictingTime})`
+        );
+        return;
+      }
+
+      const newCourse = {
+        courseCode: code,
+        name: name,
+        units: units,
+        slots: [{
+          profId: { name: teacher, department: 'Manual' },
+          day: day,
+          startTime: start,
+          endTime: end,
+          room: room
+        }]
+      };
+
+      courses.push(newCourse);
+      importedCount++;
+      row.remove(); // clear valid row
+    });
+
+    if (importedCount > 0) {
+      alert(`Successfully imported ${importedCount} classes!`);
+      displayCourses();
+    } else {
+      alert('No valid classes imported. Please fill out code, name, day, start time, and end time.');
+    }
+  });
+}
+

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Settings - ASB</title>
+  <title>Schedula Settings</title>
   <link rel="icon" type="image/png" href="../favicon.png">
   <link rel="stylesheet" href="../frontend/css/main.css">
   <link rel="stylesheet" href="../frontend/css/profile.css">
@@ -14,11 +14,9 @@
 <body>
   <header class="app-header">
     <div class="app-brand">
-      <img src="../assets/logo.png" alt="Academic Schedule Builder" class="brand-icon">
+      <img src="../assets/logo.png" alt="Schedula" class="brand-icon">
       <div class="brand-text">
-        <span>Academic</span>
-        <span>Schedule</span>
-        <span>Builder</span>
+        <span>Schedula</span>
       </div>
     </div>
 
@@ -105,6 +103,33 @@
               <img src="../assets/edit.png" alt="Edit" class="profile-edit-icon-col">
             </button>
           </div>
+        </div>
+        <div class="availability-zone-col"
+          style="background: var(--panel-glass); border: 1px solid var(--border); box-shadow: var(--panel-shadow-glass); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <h3>Availability Preferences</h3>
+          <p style="margin-bottom: 1rem; color: var(--muted);">Set times when you are unavailable for classes or
+            meetings.</p>
+          <div id="availability-list"
+            style="margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem; color: var(--text);"></div>
+          <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+            <select id="avail-day" class="profile-info-input-col profile-dropdown-select"
+              style="flex: 1; background: var(--input-bg); color: var(--text); border: 1px solid var(--border);">
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+            </select>
+            <input type="time" id="avail-start" class="profile-info-input-col"
+              style="flex: 1; background: var(--input-bg); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-button);"
+              required>
+            <input type="time" id="avail-end" class="profile-info-input-col"
+              style="flex: 1; background: var(--input-bg); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-button);"
+              required>
+            <button id="add-avail-btn" class="btn-primary" style="padding: 0 15px;">Add</button>
+          </div>
+          <button id="save-avail-btn" class="btn-primary" style="width: 100%;">Save Preferences</button>
         </div>
         <div class="danger-zone-col">
           <h3>Danger Zone</h3>

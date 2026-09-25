@@ -1,11 +1,11 @@
-// Premium Theme Handler for Academic Schedule Builder
+// Premium Theme Handler for Schedula
 // Immediately applied on load to prevent theme flash
 
 (function () {
-  const STORAGE_KEY = 'asb-theme';
+  const STORAGE_KEY = 'schedula-theme';
   const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const savedTheme = localStorage.getItem(STORAGE_KEY);
-  
+
   // Set initial theme (default to dark if not set)
   const initialTheme = savedTheme || 'dark';
   document.documentElement.setAttribute('data-theme', initialTheme);
@@ -36,7 +36,7 @@
   window.toggleTheme = function () {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    
+
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem(STORAGE_KEY, newTheme);
     updateToggleButtons(newTheme);

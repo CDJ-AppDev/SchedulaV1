@@ -166,10 +166,35 @@ async function deleteProfile(userId) {
   }
 }
 
+async function getUserPreferences(userId) {
+  const result = await pool.query(
+    'SELECT BlockedTimes FROM user_preferences WHERE userid = $1',
+    [userId]
+  );
+  if (result.rows.length === 0) {
+    return { blockedTimes: [] };
+  }
+  return { blockedTimes: result.rows[0].blockedtimes || [] };
+}
+
+async function updateUserPreferences(userId, blockedTimes) {
+  const result = await pool.query(
+    `INSERT INTO user_preferences (userid, blockedtimes, updatedat) 
+     VALUES ($1, $2::jsonb, CURRENT_TIMESTAMP) 
+     ON CONFLICT (userid) 
+     DO UPDATE SET blockedtimes = EXCLUDED.blockedtimes, updatedat = CURRENT_TIMESTAMP 
+     RETURNING blockedtimes`,
+    [userId, JSON.stringify(blockedTimes)]
+  );
+  return { blockedTimes: result.rows[0].blockedtimes };
+}
+
 module.exports = {
   saveTerm,
   getTerm,
   getSession,
   updateProfile,
-  deleteProfile
+  deleteProfile,
+  getUserPreferences,
+  updateUserPreferences
 };

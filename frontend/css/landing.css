@@ -2,7 +2,9 @@
 @import url('https://fonts.cdnfonts.com/css/hubot-sans');
 
 /* ─── Reset & Root ─────────────────────────────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -17,13 +19,13 @@
   margin: 0;
   padding: 0;
 
-  --bg:      #09090b;
-  --fg:      #f4f4f5;
-  --muted:   #a1a1aa;
-  --border:  rgba(255, 255, 255, 0.08);
-  --accent:  #8b5cf6;
+  --bg: #09090b;
+  --fg: #f4f4f5;
+  --muted: #a1a1aa;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #8b5cf6;
   --accent2: #a78bfa;
-  --glass:   rgba(9, 9, 11, 0.5);
+  --glass: rgba(9, 9, 11, 0.5);
 
   background: var(--bg);
   color: var(--fg);
@@ -32,13 +34,13 @@
 }
 
 [data-theme="light"] .hero-root {
-  --bg:      #f8fafc;
-  --fg:      #0f172a;
-  --muted:   #475569;
-  --border:  rgba(139, 92, 246, 0.12);
-  --accent:  #7c3aed;
+  --bg: #f8fafc;
+  --fg: #0f172a;
+  --muted: #475569;
+  --border: rgba(139, 92, 246, 0.12);
+  --accent: #7c3aed;
   --accent2: #8b5cf6;
-  --glass:   rgba(255, 255, 255, 0.6);
+  --glass: rgba(255, 255, 255, 0.6);
 }
 
 /* ─── Particle Canvas ────────────────────────────────────────────── */
@@ -66,7 +68,8 @@
   z-index: 1;
 }
 
-.hline, .vline {
+.hline,
+.vline {
   position: absolute;
   background: var(--border);
   will-change: transform, opacity;
@@ -79,11 +82,23 @@
   right: 0;
   transform: scaleX(0);
   transform-origin: 50% 50%;
-  animation: drawX 900ms cubic-bezier(.22,.61,.36,1) forwards;
+  animation: drawX 900ms cubic-bezier(.22, .61, .36, 1) forwards;
 }
-.hline:nth-child(1) { top: 20%;  animation-delay: 150ms; }
-.hline:nth-child(2) { top: 50%;  animation-delay: 280ms; }
-.hline:nth-child(3) { top: 80%;  animation-delay: 410ms; }
+
+.hline:nth-child(1) {
+  top: 20%;
+  animation-delay: 150ms;
+}
+
+.hline:nth-child(2) {
+  top: 50%;
+  animation-delay: 280ms;
+}
+
+.hline:nth-child(3) {
+  top: 80%;
+  animation-delay: 410ms;
+}
 
 /* Vertical lines */
 .vline {
@@ -92,14 +107,27 @@
   bottom: 0;
   transform: scaleY(0);
   transform-origin: 50% 0%;
-  animation: drawY 1000ms cubic-bezier(.22,.61,.36,1) forwards;
+  animation: drawY 1000ms cubic-bezier(.22, .61, .36, 1) forwards;
 }
-.vline:nth-child(4) { left: 20%;  animation-delay: 520ms; }
-.vline:nth-child(5) { left: 50%;  animation-delay: 640ms; }
-.vline:nth-child(6) { left: 80%;  animation-delay: 760ms; }
+
+.vline:nth-child(4) {
+  left: 20%;
+  animation-delay: 520ms;
+}
+
+.vline:nth-child(5) {
+  left: 50%;
+  animation-delay: 640ms;
+}
+
+.vline:nth-child(6) {
+  left: 80%;
+  animation-delay: 760ms;
+}
 
 /* Shimmer pass */
-.hline::after, .vline::after {
+.hline::after,
+.vline::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -107,27 +135,75 @@
   opacity: 0;
   animation: shimmer 900ms ease-out forwards;
 }
-.hline:nth-child(1)::after { animation-delay: 150ms; }
-.hline:nth-child(2)::after { animation-delay: 280ms; }
-.hline:nth-child(3)::after { animation-delay: 410ms; }
-.vline:nth-child(4)::after { animation-delay: 520ms; }
-.vline:nth-child(5)::after { animation-delay: 640ms; }
-.vline:nth-child(6)::after { animation-delay: 760ms; }
+
+.hline:nth-child(1)::after {
+  animation-delay: 150ms;
+}
+
+.hline:nth-child(2)::after {
+  animation-delay: 280ms;
+}
+
+.hline:nth-child(3)::after {
+  animation-delay: 410ms;
+}
+
+.vline:nth-child(4)::after {
+  animation-delay: 520ms;
+}
+
+.vline:nth-child(5)::after {
+  animation-delay: 640ms;
+}
+
+.vline:nth-child(6)::after {
+  animation-delay: 760ms;
+}
 
 @keyframes drawX {
-  0%   { transform: scaleX(0); opacity: 0; }
-  60%  { opacity: .9; }
-  100% { transform: scaleX(1); opacity: .75; }
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+
+  60% {
+    opacity: .9;
+  }
+
+  100% {
+    transform: scaleX(1);
+    opacity: .75;
+  }
 }
+
 @keyframes drawY {
-  0%   { transform: scaleY(0); opacity: 0; }
-  60%  { opacity: .9; }
-  100% { transform: scaleY(1); opacity: .75; }
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+
+  60% {
+    opacity: .9;
+  }
+
+  100% {
+    transform: scaleY(1);
+    opacity: .75;
+  }
 }
+
 @keyframes shimmer {
-  0%   { opacity: 0; }
-  30%  { opacity: .3; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  30% {
+    opacity: .3;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 /* ─── Header ─────────────────────────────────────────────────────── */
@@ -211,7 +287,7 @@
 
 .hero-cta-secondary:active {
   transform: translateY(1px) scale(0.98);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero-cta-primary {
@@ -228,7 +304,7 @@
   box-shadow: 0 2px 6px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
   line-height: 34px;
-  text-shadow: 0 -1px 0 rgba(0,0,0,0.15);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15);
 }
 
 .hero-cta-primary:hover {
@@ -241,7 +317,7 @@
 .hero-cta-primary:active {
   transform: translateY(1.5px) scale(0.97);
   background: linear-gradient(to bottom, #7c3aed, #6d28d9);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 [data-theme="light"] .hero-cta-primary {
@@ -273,8 +349,15 @@
 }
 
 @keyframes heroFadeIn {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero-kicker {
@@ -290,7 +373,7 @@
   font-family: 'Hubot Sans', 'Plus Jakarta Sans', system-ui, sans-serif;
   font-weight: 700;
   font-size: clamp(2.5rem, 9vw, 6rem);
-  line-height: 0.95;
+  padding-bottom: 0.1em;
   margin: 0;
   color: var(--fg);
   letter-spacing: -0.02em;
@@ -301,7 +384,7 @@
 }
 
 [data-theme="light"] .hero-title {
-  background: linear-gradient(135deg, #0f172a 0%, #7c3aed 60%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #284381 0%, #7c3aed 60%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

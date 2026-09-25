@@ -217,6 +217,7 @@
   border: 1px solid rgba(16, 185, 129, 0.4);
   border-radius: var(--radius-button);
   padding: 10px 24px;
+  color: #ffffff;
   font-weight: 700;
   font-size: 0.95rem;
   font-family: inherit;
@@ -441,11 +442,15 @@
 /* ─── Premium Light Mode Polishes for Plotter ─── */
 [data-theme="light"] .plotter-controls-section h3,
 [data-theme="light"] .plotter-schedule-item,
-[data-theme="light"] .plotter-schedule-item button,
+[data-theme="light"] .plotter-schedule-item button:not(.btn-green),
 [data-theme="light"] .options-title,
 [data-theme="light"] .options-color,
 [data-theme="light"] .options-column label {
   color: var(--text) !important;
+}
+[data-theme="light"] .btn-green,
+[data-theme="light"] .plotter-schedule-item .btn-green {
+  color: #ffffff !important;
 }
 [data-theme="light"] .options-column label:hover {
   color: var(--accent) !important;
