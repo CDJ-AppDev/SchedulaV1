@@ -4,6 +4,7 @@
 - Update Footer
 - Update Email
 - React / Angular Components
+- Password Reset, confirm PIN first
 
 ## Individual Tasks
 ### Jian
