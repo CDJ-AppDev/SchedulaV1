@@ -52,18 +52,22 @@
 
 | Task No. | Task Name | Priority | Status |
 | :---: | ----- | :---: | :---: |
-| Task 1: | Prepare timeline for development of all features. | Urgent | To Do |
-| Task 2:  | Create the UI mockups for the new features. | High | To Do |
-| Task 3:  | Create a flowchart for planning Smart Scheduling function. | Urgent | To Do |
-| Task 4:  | Create a survey to validate product requirements from potential users. | High | To Do |
+| Task 1: | Prepare timeline for development of all features. | Urgent | In Progress |
+| Task 2:  | Create the UI mockups for the new features. | Mid | To Do |
+| Task 3:  | Create flowchart / architecture for planning Smart Scheduling function. | Urgent | Done |
+| Task 4:  | Create a survey to validate product requirements from potential users. | High | Done |
 | Task 5:  | Finalize data description and database design. | High | To Do |
-| Task 6:  | Create an MVP prototype of Schedula, with a demo of Smart Scheduling. | Urgent | To Do |
+| Task 6:  | Create an MVP prototype of Schedula, with a demo of Smart Scheduling. | Urgent | Done |
+| Task 7: | Create a logo and banner for Schedula / CDJ Builders | Low | Done |
 
 ***Deliverable 3: Collaborative Teamwork and Kanban Board***
 
 | To Do (Not Started) | In Progress (Current)  | Done (Completed) |
-| ----- | ----- | ----- |
-| Core Feature 2 Core Feature 4 Secondary Feature 7 Secondary Feature 8 Secondary Feature 9 | Core Feature 1 Core Feature 3 | Core Feature 5 Core Feature 6 |
+| ----- | ----- | :---: |
+| **Task 2:**  Create UI Mockups | **Task 1:**  Timeline for all features | **Task 6:**  Create an MVP prototype |
+| **Task 5:**  Finalize data description |  | **Task 4:**  Create a survey |
+|  |  | **Task 3:**  Create a flowchart for Feature 1 |
+|  |  | **Task 7:** Create Logos |
 
 ***Deliverable 4: Responsible AI-Assisted Project Planning***  
 **AI Usage in Project Planning:**   
@@ -75,9 +79,21 @@ Data gathered from surveys and questionnaires were anonymized to protect persona
 **Human Oversight & Verification:**   
 AI assistance in code writing was used, but all output from AI was rigorously reviewed and modified when needed. It is ensured that all code is scalable and without error.
 
-**Deliverable 5: Sprint Review & Retrospective**
+***Deliverable 5: Sprint Review & Retrospective***
 
-Sprint Review (Demo Summary): The team successfully demonstrated a working prototype of \[Project Name\]. The system successfully accepted user inputs and processed them through the core \[Insert Core Feature\] module to deliver the intended output.   
-Sprint Retrospective:   
-• What went well: Utilizing AI for initial framework scaffolding and user story generation greatly reduced setup time.   
-• What can be improved: Time management during the middle phase could be optimized; we must aggressively limit feature scope immediately when working inside highly constrained time blocks. 
+**Sprint Review (Demo Summary):**  
+The team successfully demonstrated a working prototype of Schedula: Build Your Daily Blocks. The prototype is guided by a flowchart that effectively expresses the system flow. The program successfully adapted to the users’ schedules with the core smart scheduling module to deliver a schedule with common hours between team members. In addition, the team created a User Requirements Survey to assess all proposed features with data from a real user base. The team also finalized logos for both the project and the organization.
+
+In the next sprint, the team will aim to develop UI mockups, design data flow, and start making a flowchart or a system architecture for feature 2, along with additional core documents for our software engineering project.
+
+| What went well | What can be improved |
+| ----- | ----- |
+| Team coordination and planning was sufficient. | Team assigned deadlines need to be more specific. |
+| The division of workloads was the right amount. |  |
+| Team members were assigned tasks according to their strengths. |  |
+
+| Survey Link | https://tinyurl.com/00SchedulaUserSurvey |
+| :---: | :---- |
+| **Prototype Repository** | https://github.com/CDJ-AppDev/SchedulaV1 |
+| **Feature 1 Flowchart** | https://canva.link/czi01saota6qiac |
+
