@@ -61,7 +61,7 @@ Build a functional Minimum Viable Product (MVP) prototype of Schedula that demon
 - **Containerization:** Docker & Docker Compose setup
 
 ### Planned Rebuild
-- **Frontend Rebuild:** Vite + React + TypeScript + Tailwind CSS (as detailed in [NEW_PRD.md](./NEW_PRD.md))
+- **Frontend Rebuild:** Vite + React + TypeScript + Tailwind CSS (as detailed in [PRD.md](./PRD.md))
 
 ---
 
@@ -100,35 +100,6 @@ Build a functional Minimum Viable Product (MVP) prototype of Schedula that demon
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18+ recommended)
 - [PostgreSQL](https://www.postgresql.org/) (v14+ recommended)
-
-### Local Setup Instructions
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/CDJ-AppDev/SchedulaV1.git
-   cd SchedulaV1
-   ```
-
-2. **Backend Configuration & Execution:**
-   ```bash
-   cd backend
-   npm install
-   node db-server.js
-   ```
-
-3. **Access the Web Application:**
-   Open your browser and navigate to `http://localhost:3000` (or `http://localhost:8080` if using a static file server for the root directory).
-
----
-
-## 📄 References & Academic Foundation
-
-For full citation list and detailed literature review, see [public/SchedulaProposal.md](./public/SchedulaProposal.md):
-- **Patzak, A., Zhang, X., & Vytasek, J. (2025).** Boosting productivity and wellbeing through time management. *Frontiers in Education*.
-- **Roels, G., & Corbett, C. J. (2024).** Too many meetings? Scheduling rules for team coordination. *Management Science*.
-- **Tran, T. N. T., Felfernig, A., & Le, V. M. (2023).** An overview of consensus models for group decision-making. *User Modeling and User-Adapted Interaction*.
-- **Abdipoor, S., et al. (2023).** Meta-heuristic approaches for the University Course Timetabling Problem. *Intelligent Systems With Applications*.
-
 ---
 
 *© 2026 CDJ Builders (De La Salle University - Dasmarinas)*
