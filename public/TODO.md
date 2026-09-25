@@ -15,4 +15,6 @@
 - Core Feature 1 Flowchart / Architecture
 ### Samuel
 - UI/UX Mockups
+- Color Palette
+- Font Selection
 - Logos and other assets
