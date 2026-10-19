@@ -57,8 +57,7 @@ Build a functional Minimum Viable Product (MVP) prototype of Schedula that demon
 ### Current MVP Implementation
 - **Frontend:** HTML5, Vanilla CSS3 (Custom Glassmorphism Design System), Vanilla JavaScript (ES6 Modules)
 - **Backend:** Node.js, Express.js (RESTful API architecture)
-- **Database:** PostgreSQL (Relational schema with `USERS`, `USER_PREFERENCES`, `COURSES`, `SCHEDULES`)
-- **Containerization:** Docker & Docker Compose setup
+- **Database:** PostgreSQL (Relational schema with `USERS`, `USER_PREFERENCES`, `COURSES`, `SCHEDULES`)\
 
 ### Planned Rebuild
 - **Frontend Rebuild:** Vite + React + TypeScript + Tailwind CSS (as detailed in [PRD.md](./PRD.md))
@@ -76,11 +75,11 @@ Build a functional Minimum Viable Product (MVP) prototype of Schedula that demon
 │   ├── css/                  # Modular stylesheets (landing, main, plotter, profile, builder)
 │   └── scripts/              # Frontend interactive logic (subjects, profile, plotter, theme)
 ├── pages/                    # Web pages (index, builder, plotter, profile, login, signup, setup)
-├── public/                   # Project proposals, Agile documentation, & notes
+├── docs/                   # Project proposals, Agile documentation, & notes
 │   ├── SchedulaProposal.md   # Comprehensive project proposal & academic research foundation
-│   ├── SchedulaAgileSRUM1.md # Sprint planning, product backlog, and retrospective
+│   ├── SchedulaSRUM.md # Sprint planning, product backlog, and retrospective
 │   └── TODO.md               # Task list and feature tracking
-├── PRD.md                # Updated Product Requirements Document
+├── PRD.md                    # Updated Product Requirements Document
 ├── PROGRESS.md               # Implementation progress tracking
 └── README.md                 # Project README
 ```

@@ -22,15 +22,15 @@ const authenticateToken = (req, res, next) => {
 
 /**
  * Express Middleware to restrict access to Super Admins.
- * Queries the database to verify the user's role status is 'Admin'.
+ * Queries the database to verify the user's platform role is 'admin'.
  */
 const adminOnly = async (req, res, next) => {
   try {
     const result = await pool.query(
-      'SELECT useraccess FROM user_credentials WHERE userid = $1',
+      'SELECT platform_role FROM users WHERE id = $1 AND deleted_at IS NULL',
       [req.user.user_id]
     );
-    if (result.rows.length === 0 || result.rows[0].useraccess !== 'Admin') {
+    if (result.rows.length === 0 || result.rows[0].platform_role !== 'admin') {
       return res.status(403).json({ error: 'Access denied: Admin role required' });
     }
     next();

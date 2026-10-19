@@ -14,23 +14,9 @@ pool.on('error', (err) => {
 });
 
 async function initDB() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS REFRESH_TOKENS (
-        ID SERIAL PRIMARY KEY,
-        UserID INT NOT NULL REFERENCES USER_CREDENTIALS(UserID) ON DELETE CASCADE,
-        Token VARCHAR(500) NOT NULL UNIQUE,
-        ExpiresAt TIMESTAMP NOT NULL,
-        CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON REFRESH_TOKENS(Token);`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_refresh_tokens_userid ON REFRESH_TOKENS(UserID);`);
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('Database refresh token table auto-initialized successfully.');
-    }
-  } catch (err) {
-    console.error('Error auto-initializing database refresh token table:', err);
+  await pool.query('SELECT 1');
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('Database connection verified. Apply migrations before starting the API.');
   }
 }
 

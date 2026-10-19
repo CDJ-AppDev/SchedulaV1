@@ -1,79 +1,44 @@
 const express = require('express');
-const router = express.Router();
 const userService = require('../services/userService');
 const asyncHandler = require('../utils/asyncHandler');
 const { authenticateToken } = require('../middleware/auth');
 
-router.post('/term', authenticateToken, asyncHandler(async (req, res) => {
-  const { name, program_id, year_level, semester } = req.body;
+const router = express.Router();
+router.use(authenticateToken);
 
-  if (!program_id || year_level === undefined || !semester) {
-    return res.status(400).json({ error: 'Missing required fields: program_id, year_level, semester' });
-  }
-
-  try {
-    const result = await userService.saveTerm(req.user.user_id, name, program_id, year_level, semester);
-    res.status(201).json({ message: 'Program selection saved', user_id: req.user.user_id, term_id: result.term_id });
-  } catch (error) {
-    res.status(error.status || 500).json({ error: error.message || 'Failed to save TermID selection' });
-  }
+router.get('/user-session', asyncHandler(async (req, res) => {
+  res.json(await userService.getSession(req.user.user_id));
 }));
 
-router.get('/term', authenticateToken, asyncHandler(async (req, res) => {
-  const { termId } = req.query;
-  try {
-    const term = await userService.getTerm(req.user.user_id, termId);
-    res.json(term);
-  } catch (error) {
-    res.status(error.status || 500).json({ error: error.message || 'Server error' });
-  }
+router.put('/user/profile', asyncHandler(async (req, res) => {
+  await userService.updateProfile(req.user.user_id, req.body);
+  res.json({ message: 'Profile updated successfully' });
 }));
 
-router.get('/user-session', authenticateToken, asyncHandler(async (req, res) => {
-  try {
-    const session = await userService.getSession(req.user.user_id);
-    res.json(session);
-  } catch (error) {
-    res.status(error.status || 500).json({ error: error.message || 'Server error' });
-  }
+router.delete('/user/profile', asyncHandler(async (req, res) => {
+  await userService.deleteProfile(req.user.user_id);
+  res.json({ message: 'Account deleted successfully' });
 }));
 
-router.put('/user/profile', authenticateToken, asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
-  try {
-    await userService.updateProfile(req.user.user_id, username, email, password);
-    res.json({ message: 'Profile updated successfully' });
-  } catch (error) {
-    res.status(error.status || 400).json({ error: error.message || 'Error updating profile' });
-  }
+router.get('/preferences', asyncHandler(async (req, res) => {
+  res.json(await userService.getPreferences(req.user.user_id));
 }));
 
-router.delete('/user/profile', authenticateToken, asyncHandler(async (req, res) => {
-  try {
-    await userService.deleteProfile(req.user.user_id);
-    res.json({ message: 'Account deleted successfully' });
-  } catch (error) {
-    res.status(error.status || 500).json({ error: error.message || 'Server error: failed to delete account' });
-  }
+router.put('/preferences', asyncHandler(async (req, res) => {
+  res.json(await userService.updatePreferences(req.user.user_id, req.body));
 }));
 
-router.get('/preferences', authenticateToken, asyncHandler(async (req, res) => {
-  try {
-    const prefs = await userService.getUserPreferences(req.user.user_id);
-    res.json(prefs);
-  } catch (error) {
-    res.status(error.status || 500).json({ error: error.message || 'Server error fetching preferences' });
-  }
+router.get('/availability', asyncHandler(async (req, res) => {
+  res.json(await userService.listAvailability(req.user.user_id));
 }));
 
-router.put('/preferences', authenticateToken, asyncHandler(async (req, res) => {
-  const { blockedTimes } = req.body;
-  try {
-    const prefs = await userService.updateUserPreferences(req.user.user_id, blockedTimes || []);
-    res.json({ message: 'Preferences updated successfully', preferences: prefs });
-  } catch (error) {
-    res.status(error.status || 400).json({ error: error.message || 'Error updating preferences' });
-  }
+router.post('/availability', asyncHandler(async (req, res) => {
+  res.status(201).json(await userService.createAvailability(req.user.user_id, req.body));
+}));
+
+router.delete('/availability/:id', asyncHandler(async (req, res) => {
+  await userService.deleteAvailability(req.user.user_id, req.params.id);
+  res.status(204).send();
 }));
 
 module.exports = router;

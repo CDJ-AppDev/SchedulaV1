@@ -1,200 +1,156 @@
 const { pool } = require('../config/database');
-const { encrypt, decrypt } = require('../utils/crypto');
-const { logDebug } = require('../utils/helpers');
 
-async function saveTerm(userId, name, program_id, year_level, semester) {
+async function getSession(userId) {
+  const result = await pool.query(
+    `SELECT u.id AS user_id, u.email, u.platform_role AS access,
+            p.display_name AS name, p.timezone, p.locale, p.avatar_url, p.working_hours
+       FROM users u
+       LEFT JOIN profiles p ON p.user_id = u.id AND p.deleted_at IS NULL
+      WHERE u.id = $1 AND u.deleted_at IS NULL`,
+    [userId]
+  );
+  if (!result.rows.length) {
+    const error = new Error('User not found');
+    error.status = 404;
+    throw error;
+  }
+  return result.rows[0];
+}
+
+async function updateProfile(userId, { display_name, timezone, locale, avatar_url, working_hours, email, password }) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-
-    const termResult = await client.query(
-      'SELECT termid FROM term WHERE programid = $1 AND yearlevel = $2 AND semester = $3',
-      [program_id, year_level, semester]
+    if (email) {
+      await client.query('UPDATE users SET email = LOWER($1) WHERE id = $2 AND deleted_at IS NULL', [email, userId]);
+    }
+    if (password && password.trim()) {
+      await client.query("UPDATE users SET password_hash = crypt($1, gen_salt('bf')) WHERE id = $2 AND deleted_at IS NULL", [password, userId]);
+    }
+    await client.query(
+      `INSERT INTO profiles (user_id, display_name, timezone, locale, avatar_url, working_hours)
+       VALUES ($1, $2, COALESCE($3, 'UTC'), COALESCE($4, 'en-US'), $5, COALESCE($6, '{}'::jsonb))
+       ON CONFLICT (user_id) DO UPDATE SET
+         display_name = COALESCE(EXCLUDED.display_name, profiles.display_name),
+         timezone = COALESCE(EXCLUDED.timezone, profiles.timezone),
+         locale = COALESCE(EXCLUDED.locale, profiles.locale),
+         avatar_url = COALESCE(EXCLUDED.avatar_url, profiles.avatar_url),
+         working_hours = COALESCE(EXCLUDED.working_hours, profiles.working_hours),
+         deleted_at = NULL`,
+      [userId, display_name || null, timezone || null, locale || null, avatar_url || null, working_hours ? JSON.stringify(working_hours) : null]
     );
-
-    if (termResult.rows.length === 0) {
-      const err = new Error('Invalid program, year level, or semester combination');
-      err.status = 400;
-      throw err;
-    }
-
-    const termID = termResult.rows[0].termid;
-    logDebug('Found termID:', termID);
-
-    let updateResult;
-    if (name) {
-      logDebug('Updating with name:', name);
-      updateResult = await client.query(
-        'UPDATE user_profile SET username = $1, termid = $2 WHERE userid = $3 RETURNING userid',
-        [name, termID, userId]
-      );
-    } else {
-      logDebug('Updating termid only');
-      updateResult = await client.query(
-        'UPDATE user_profile SET termid = $1 WHERE userid = $2 RETURNING userid',
-        [termID, userId]
-      );
-    }
-
-    if (updateResult.rows.length === 0) {
-      const err = new Error('Failed to update user profile');
-      err.status = 500;
-      throw err;
-    }
-
     await client.query('COMMIT');
-    return { term_id: termID };
   } catch (error) {
     await client.query('ROLLBACK');
+    if (error.code === '23505') {
+      error.status = 400;
+      error.message = 'Email is already in use';
+    }
     throw error;
   } finally {
     client.release();
   }
 }
 
-async function getTerm(userId, termIdParam) {
-  if (termIdParam) {
-    const result = await pool.query(
-      `SELECT termid as term_id, programid as program_id, yearlevel as year_level, semester as semester, requnits as req_units
-       FROM term
-       WHERE termid = $1`,
-      [termIdParam]
-    );
-    if (result.rows.length > 0) {
-      return result.rows[0];
-    } else {
-      const err = new Error('Term not found');
-      err.status = 404;
-      throw err;
-    }
-  }
-
-  const result = await pool.query(
-    `SELECT t.termid as term_id, t.programid as program_id, t.yearlevel as year_level, t.semester as semester, t.requnits as req_units
-     FROM user_profile up
-     JOIN term t ON up.termid = t.termid
-     WHERE up.userid = $1`,
-    [userId]
-  );
-
-  return result.rows.length > 0 ? result.rows[0] : null;
-}
-
-async function getSession(userId) {
-  const result = await pool.query(
-    `SELECT uc.userid, uc.useremail, uc.userpassword, uc.useraccess, up.username 
-     FROM user_credentials uc 
-     LEFT JOIN user_profile up ON uc.userid = up.userid 
-     WHERE uc.userid = $1`,
-    [userId]
-  );
-  if (result.rows.length === 0) {
-    const err = new Error('User not found');
-    err.status = 404;
-    throw err;
-  }
-  const user = result.rows[0];
-  let decryptedPassword = '';
-  if (user.userpassword) {
-    decryptedPassword = decrypt(user.userpassword);
-  }
-
-  return {
-    user_id: user.userid,
-    name: user.username,
-    email: user.useremail,
-    password: decryptedPassword,
-    access: user.useraccess
-  };
-}
-
-async function updateProfile(userId, username, email, password) {
-  let client;
-  try {
-    client = await pool.connect();
-    await client.query('BEGIN');
-
-    if (email) {
-      const checkEmail = await client.query(
-        'SELECT userid FROM user_credentials WHERE useremail = LOWER($1) AND userid <> $2',
-        [email, userId]
-      );
-      if (checkEmail.rows.length > 0) {
-        const err = new Error('Email is already taken by another user');
-        err.status = 400;
-        throw err;
-      }
-      await client.query(
-        'UPDATE user_credentials SET useremail = LOWER($1) WHERE userid = $2',
-        [email, userId]
-      );
-    }
-
-    if (password && password.trim() !== '') {
-      const encryptedPassword = encrypt(password);
-      await client.query(
-        'UPDATE user_credentials SET userpassword = $1 WHERE userid = $2',
-        [encryptedPassword, userId]
-      );
-    }
-
-    if (username) {
-      await client.query(
-        'UPDATE user_profile SET username = $1 WHERE userid = $2',
-        [username, userId]
-      );
-    }
-
-    await client.query('COMMIT');
-  } catch (err) {
-    if (client) await client.query('ROLLBACK');
-    throw err;
-  } finally {
-    if (client) client.release();
-  }
-}
-
 async function deleteProfile(userId) {
   const result = await pool.query(
-    'DELETE FROM user_credentials WHERE userid = $1 RETURNING userid',
+    'UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1 AND deleted_at IS NULL RETURNING id',
     [userId]
   );
-  if (result.rows.length === 0) {
-    const err = new Error('User not found');
-    err.status = 404;
-    throw err;
+  if (!result.rows.length) {
+    const error = new Error('User not found');
+    error.status = 404;
+    throw error;
   }
 }
 
-async function getUserPreferences(userId) {
+async function getPreferences(userId) {
   const result = await pool.query(
-    'SELECT BlockedTimes FROM user_preferences WHERE userid = $1',
+    `SELECT preferred_time_start, preferred_time_end, preferred_days, buffer_minutes,
+            modality_preference, default_view, notification_settings,
+            time_of_day_preferences, conflict_tolerance
+       FROM preferences WHERE user_id = $1 AND deleted_at IS NULL`,
     [userId]
   );
-  if (result.rows.length === 0) {
-    return { blockedTimes: [] };
-  }
-  return { blockedTimes: result.rows[0].blockedtimes || [] };
+  return result.rows[0] || {};
 }
 
-async function updateUserPreferences(userId, blockedTimes) {
+async function updatePreferences(userId, input) {
   const result = await pool.query(
-    `INSERT INTO user_preferences (userid, blockedtimes, updatedat) 
-     VALUES ($1, $2::jsonb, CURRENT_TIMESTAMP) 
-     ON CONFLICT (userid) 
-     DO UPDATE SET blockedtimes = EXCLUDED.blockedtimes, updatedat = CURRENT_TIMESTAMP 
-     RETURNING blockedtimes`,
-    [userId, JSON.stringify(blockedTimes)]
+    `INSERT INTO preferences (
+       user_id, preferred_time_start, preferred_time_end, preferred_days,
+       buffer_minutes, modality_preference, default_view, notification_settings,
+       time_of_day_preferences, conflict_tolerance
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9::jsonb, $10)
+     ON CONFLICT (user_id) DO UPDATE SET
+       preferred_time_start = EXCLUDED.preferred_time_start,
+       preferred_time_end = EXCLUDED.preferred_time_end,
+       preferred_days = EXCLUDED.preferred_days,
+       buffer_minutes = EXCLUDED.buffer_minutes,
+       modality_preference = EXCLUDED.modality_preference,
+       default_view = EXCLUDED.default_view,
+       notification_settings = EXCLUDED.notification_settings,
+       time_of_day_preferences = EXCLUDED.time_of_day_preferences,
+       conflict_tolerance = EXCLUDED.conflict_tolerance,
+       deleted_at = NULL
+     RETURNING *`,
+    [
+      userId, input.preferred_time_start || null, input.preferred_time_end || null,
+      input.preferred_days || null, input.buffer_minutes ?? null,
+      input.modality_preference || null, input.default_view || null,
+      JSON.stringify(input.notification_settings || {}),
+      JSON.stringify(input.time_of_day_preferences || {}), input.conflict_tolerance || null
+    ]
   );
-  return { blockedTimes: result.rows[0].blockedtimes };
+  return result.rows[0];
+}
+
+async function listAvailability(userId) {
+  const result = await pool.query(
+    `SELECT id, start_at, end_at, timezone, availability_type, label
+       FROM availability_blocks
+      WHERE user_id = $1 AND deleted_at IS NULL
+      ORDER BY start_at`,
+    [userId]
+  );
+  return result.rows;
+}
+
+async function createAvailability(userId, input) {
+  if (!input.start_at || !input.end_at || !input.availability_type) {
+    const error = new Error('start_at, end_at, and availability_type are required');
+    error.status = 400;
+    throw error;
+  }
+  const result = await pool.query(
+    `INSERT INTO availability_blocks (user_id, start_at, end_at, timezone, availability_type, label)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING id, start_at, end_at, timezone, availability_type, label`,
+    [userId, input.start_at, input.end_at, input.timezone || 'UTC', input.availability_type, input.label || null]
+  );
+  return result.rows[0];
+}
+
+async function deleteAvailability(userId, blockId) {
+  const result = await pool.query(
+    `UPDATE availability_blocks SET deleted_at = CURRENT_TIMESTAMP
+      WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL RETURNING id`,
+    [blockId, userId]
+  );
+  if (!result.rows.length) {
+    const error = new Error('Availability block not found');
+    error.status = 404;
+    throw error;
+  }
 }
 
 module.exports = {
-  saveTerm,
-  getTerm,
   getSession,
   updateProfile,
   deleteProfile,
-  getUserPreferences,
-  updateUserPreferences
+  getPreferences,
+  updatePreferences,
+  listAvailability,
+  createAvailability,
+  deleteAvailability
 };
