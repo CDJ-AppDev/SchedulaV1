@@ -131,6 +131,8 @@ body::before {
 .auth-logo {
   width: 32px;
   height: 32px;
+  max-width: 32px;
+  max-height: 32px;
   object-fit: contain;
 }
 
@@ -487,6 +489,19 @@ select option {
   background: linear-gradient(to bottom, #f87171, #ef4444) !important;
   border: 1px solid rgba(239, 68, 68, 0.5) !important;
   color: #ffffff !important;
+  padding: 10px 24px !important;
+  min-height: 42px;
+  border-radius: var(--radius-button);
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  font-family: inherit;
+  white-space: nowrap;
   box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
 }
@@ -1075,6 +1090,56 @@ select option {
   margin: 0 !important;
 }
 
+/* Keep image assets from expanding when a page or browser applies intrinsic sizing. */
+.app-header .brand-icon {
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  max-height: 40px;
+  object-fit: contain;
+}
+
+.app-header .nav-icon {
+  width: 18px;
+  height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  object-fit: contain;
+}
+
+.app-header .header-profile-img {
+  width: 32px;
+  height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  object-fit: cover;
+}
+
+.app-header .header-icon-img {
+  width: 24px;
+  height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+  object-fit: contain;
+}
+
+.page-title-header .page-title-icon {
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  max-height: 40px;
+  object-fit: contain;
+}
+
+.btn-icon {
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
 /* ===================== RESPONSIVE NAVBAR ===================== */
 
 /* Medium: reduce nav button padding and font size slightly */
@@ -1200,3 +1265,24 @@ select option {
 [data-theme="light"] .arrow {
   filter: invert(1) opacity(0.7);
 }
+
+.custom-modal-btn.success {
+  background: linear-gradient(to bottom, #34d399, #10b981);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.custom-modal-btn.success:hover {
+  background: linear-gradient(to bottom, #6ee7b7, #059669);
+  border-color: #34d399;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.custom-modal-icon.success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.custom-modal-title.success-text { color: #10b981; }

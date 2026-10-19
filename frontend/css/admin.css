@@ -584,28 +584,6 @@
   min-width: auto;
 }
 
-.admin-filter-select.select-program {
-  width: 135px;
-}
-
-.admin-filter-select.select-term {
-  width: 110px;
-}
-
-.admin-filter-select.select-course {
-  width: 170px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.admin-filter-select.select-dept {
-  width: 155px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
 /* ── Layout Overrides ─────────────────────────────────────────── */
 .page-title {
   margin-top: 28px !important;

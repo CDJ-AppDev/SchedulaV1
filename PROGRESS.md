@@ -41,23 +41,18 @@ Transition "Academic Schedule Builder (ASB)" into "Schedula", preparing a simple
 - Verified against the live local API: login, schedule creation, event creation, overlap detection, event update, event deletion, and schedule reload all passed. Temporary verification data was soft-deleted afterward.
 - Remaining refactor work: update frontend callers and UI payloads, remove academic copy/styles/assets, and complete end-to-end frontend verification.
 
-### Phase 3 - Frontend Plan (awaiting review)
+### Phase 3 - Frontend (complete)
 
-1. **Map page contracts.** Inventory every page script and HTML element that currently calls `/term`, `/schedule`, `/courses`, `/programs`, or sends course-shaped JSON. Record the replacement endpoint and payload before editing.
-2. **Generalize the builder markup.** Replace course import fields with required `title`, `start_at`, `end_at`, and `timezone`; add an `Add details` disclosure for nullable description, location, modality, category, color, priority, status, recurrence rule, reminder offset, notes, and participants.
-3. **Rewrite builder state/API calls.** Adapt `frontend/scripts/subjects.js` to `/api/schedules` and `/api/schedules/:id/events`, remove term/unit/regular/irregular/course-slot state, retain schedule switching, save/delete, escaping, and generic overlap presentation.
-4. **Replace academic data classes.** Remove `Professor`, `CourseSlot`, and `Course` from `frontend/scripts/classes.js`; use the event payload directly unless a generic event helper is demonstrably needed.
-5. **Generalize visualization.** Update plotter labels, controls, fallbacks, and block rendering from course/code/professor/room fields to event title, description, location, participant, and time fields. Preserve color customization and PNG export while removing fixed academic wording.
-6. **Update profile/preferences.** Remove program/year/semester selection and `/term` calls. Keep account editing, connect preferences to `/api/preferences`, and connect availability CRUD to `/api/availability`.
-7. **Update onboarding and dashboard copy.** Make setup/profile/home pages generic for personal and team scheduling; remove academic labels, assumptions, and dead redirects without adding a replacement component unless required.
-8. **Reduce admin UI.** Remove programs, terms, courses, professors, and course-slot tabs/forms/filters. Keep generic users and schedules administration, updating columns and payloads to UUIDs and event counts.
-9. **Clean CSS and assets.** Remove orphaned academic selectors, labels, and assets only after markup references are gone. Preserve the existing visual direction and avoid introducing a new design system.
-10. **Frontend validation.** Run a global academic-term search over runtime files, syntax-check browser scripts, start the backend, manually verify login/profile/preferences/availability, create/edit/delete an event, verify a conflict, reload, plot, and export.
-
-**Approval gate:** Do not begin Phase 3 implementation until this checklist and the generic event UI contract are approved.
+- Replaced the academic builder with a generic event form using required title/start/end/timezone fields and an `Add details` disclosure for optional metadata.
+- Rewired builder persistence to `/api/schedules` and `/api/schedules/:scheduleId/events`, including generic overlap checks and event removal.
+- Replaced course-based plotter data with normalized schedule events and generic title/category/details/location rendering while preserving color customization and PNG export.
+- Replaced academic profile setup with generic display name, timezone, locale, preferences, and availability controls.
+- Reduced the admin UI to generic users and schedules and removed the obsolete academic data classes.
+- Removed active academic copy and orphaned builder/profile/admin/plotter selectors from the frontend runtime surface.
+- Validated all browser/admin scripts with `node --check` and verified profile/session, preferences, availability CRUD, and live API connectivity against PostgreSQL.
 
 ### Current Risks
 
-- The database migration is applied, but the frontend still calls legacy `/term`, `/schedule`, and academic payloads until Phase 3.
+- The frontend verification covered API-backed workflows; visual browser/PNG verification remains a manual check in the target browser environment.
 - Existing unrelated worktree changes were preserved, including edits to this file and deleted legacy documentation.
 - Password encryption remains reversible in the existing helper and is outside the current domain migration scope.

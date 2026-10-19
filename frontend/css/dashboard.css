@@ -52,6 +52,8 @@
 .card-icon img.brand-icon {
   width: 56px;
   height: 56px;
+  max-width: 56px;
+  max-height: 56px;
   object-fit: contain;
   filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.35));
   transition: filter 0.3s ease, transform 0.3s ease;

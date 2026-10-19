@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,165 +9,47 @@
   <link rel="stylesheet" href="../frontend/css/builder.css">
   <script src="../frontend/scripts/theme.js"></script>
 </head>
-
 <body>
   <header class="app-header">
-    <div class="app-brand">
-      <img src="../assets/logo.png" alt="Schedula" class="brand-icon">
-      <div class="brand-text">
-        <span>Schedula</span>
-      </div>
-    </div>
-
+    <div class="app-brand"><img src="../assets/logo.png" alt="Schedula" class="brand-icon"><div class="brand-text"><span>Schedula</span></div></div>
     <nav class="app-nav">
-      <button class="nav-button" onclick="window.location.href='home.html'"><img src="../assets/home.png" alt="Home"
-          class="nav-icon"> Home</button>
-      <button class="nav-button" onclick="window.location.href='builder.html'"><img src="../assets/builder.png"
-          alt="Builder" class="nav-icon"> Builder</button>
-      <button class="nav-button" onclick="window.location.href='plotter.html'"><img src="../assets/plotter.png"
-          alt="Plotter" class="nav-icon"> Plotter</button>
+      <button class="nav-button" onclick="window.location.href='home.html'"><img src="../assets/home.png" alt="Home" class="nav-icon"> Home</button>
+      <button class="nav-button" onclick="window.location.href='builder.html'"><img src="../assets/builder.png" alt="Builder" class="nav-icon"> Builder</button>
+      <button class="nav-button" onclick="window.location.href='plotter.html'"><img src="../assets/plotter.png" alt="Plotter" class="nav-icon"> Plotter</button>
     </nav>
-
-    <div class="header-profile">
-      <img src="../assets/profile.png" alt="Profile" class="header-profile-img">
-      <span class="header-username" id="header-username-display">User</span>
-    </div>
-
-    <div class="header-controls">
-      <button class="header-icon-btn theme-toggle" aria-label="Toggle theme"></button>
-      <button class="header-icon-btn" onclick="window.location.href='profile.html'">
-        <img src="../assets/settings.png" alt="Settings" class="header-icon-img">
-      </button>
-      <button class="header-icon-btn close-btn" onclick="handleLogout('../index.html')">
-        <img src="../assets/logout.png" alt="Log out" class="header-icon-img">
-      </button>
-    </div>
+    <div class="header-profile"><img src="../assets/profile.png" alt="Profile" class="header-profile-img"><span class="header-username" id="header-username-display">User</span></div>
+    <div class="header-controls"><button class="header-icon-btn theme-toggle" aria-label="Toggle theme"></button><button class="header-icon-btn" onclick="window.location.href='profile.html'"><img src="../assets/settings.png" alt="Settings" class="header-icon-img"></button><button class="header-icon-btn close-btn" onclick="handleLogout('../index.html')"><img src="../assets/logout.png" alt="Log out" class="header-icon-img"></button></div>
   </header>
-
   <main class="page-content">
-    <div class="page-title">
-      <div class="page-title-header">
-        <img src="../assets/builder.png" alt="Schedule Builder" class="page-title-icon">
-        <h1 class="page-title-text">Schedule Builder</h1>
-      </div>
-      <p>Select classes and build your schedule.</p>
-    </div>
-
+    <div class="page-title"><div class="page-title-header"><img src="../assets/builder.png" alt="Schedule Builder" class="page-title-icon"><h1 class="page-title-text">Schedule Builder</h1></div><p>Create a schedule and add events to it.</p></div>
     <section class="page-panel">
-      <h2 style="margin-bottom: 1.5rem;">Import Classes</h2>
-
-      <div class="course-card irregular-course">
-        <div class="course-card-header irregular-header" onclick="toggleDropdown('importDropdown','importArrow')">
-          <h3>Import Multiple Classes</h3>
-          <img src="../assets/dropdown.png" alt="Toggle" class="arrow" id="importArrow"
-            style="width: 14px; height: 14px; object-fit: contain; transition: transform 0.3s ease;">
+      <div class="schedules-header-container"><h2 class="schedules-title">Schedules</h2><div class="flex-center-gap"><button id="delete-schedule-btn" class="btn-remove btn-delete-schedule"><img src="../assets/delete.png" alt="Delete" class="btn-icon"> DELETE</button><select id="schedule-selector" class="schedule-selector" aria-label="Select schedule"><option value="new">+ Create New Schedule</option></select></div></div>
+      <div class="event-form-panel">
+        <h2>Add event</h2>
+        <div class="event-form-grid">
+          <label class="field"><span>Title</span><input id="event-title" type="text" required placeholder="Team planning"></label>
+          <label class="field"><span>Start</span><input id="event-start" type="datetime-local" required></label>
+          <label class="field"><span>End</span><input id="event-end" type="datetime-local" required></label>
+          <label class="field"><span>Timezone</span><input id="event-timezone" type="text" value="UTC" placeholder="UTC"></label>
         </div>
-
-        <div class="course-card-body no-padding">
-          <div class="dropdown" id="importDropdown">
-            <div style="padding: 15px; overflow-x: auto;">
-              <table id="import-table"
-                style="width: 100%; border-collapse: separate; border-spacing: 0; min-width: 700px; margin-bottom: 20px;">
-                <thead>
-                  <tr style="text-align: left;">
-                    <th
-                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
-                      Code</th>
-                    <th
-                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
-                      Name</th>
-                    <th
-                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600; width: 60px;">
-                      Units</th>
-                    <th
-                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
-                      Teacher</th>
-                    <th
-                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
-                      Room</th>
-                    <th
-                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
-                      Day</th>
-                    <th
-                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
-                      Start</th>
-                    <th
-                      style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
-                      End</th>
-                    <th style="padding: 10px 8px; border-bottom: 2px solid var(--border-color); width: 40px;"></th>
-                  </tr>
-                </thead>
-                <tbody id="import-table-body">
-                  <!-- Dynamic rows go here -->
-                </tbody>
-              </table>
-              <div style="display: flex; gap: 15px; margin-top: 20px;">
-                <button id="add-import-row-btn" class="btn-primary" type="button"
-                  style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">+
-                  Add Row</button>
-                <button id="import-classes-btn" class="btn-primary" type="button">Import All</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <details class="event-details"><summary>Add details</summary><div class="event-form-grid">
+          <label class="field"><span>Description</span><textarea id="event-description" rows="2"></textarea></label>
+          <label class="field"><span>Location or URL</span><input id="event-location" type="text"></label>
+          <label class="field"><span>Modality</span><select id="event-modality"><option value="">Not specified</option><option value="in_person">In person</option><option value="online">Online</option><option value="hybrid">Hybrid</option></select></label>
+          <label class="field"><span>Category or tag</span><input id="event-category" type="text"></label>
+          <label class="field"><span>Priority</span><input id="event-priority" type="number" min="0"></label>
+          <label class="field"><span>Status</span><input id="event-status" type="text" placeholder="planned"></label>
+          <label class="field"><span>Recurrence rule</span><input id="event-recurrence-rule" type="text" placeholder="FREQ=WEEKLY"></label>
+          <label class="field"><span>Reminder offset (minutes)</span><input id="event-reminder" type="number" min="0"></label>
+          <label class="field"><span>Notes</span><textarea id="event-notes" rows="2"></textarea></label>
+          <label class="field"><span>Color</span><input id="event-color" type="color" value="#2f6f68"></label>
+        </div></details>
+        <button id="add-event-btn" class="btn-primary" type="button">Add event</button><p id="builder-message" class="text-muted-light" role="status"></p>
       </div>
-
-      <script>
-        function toggleDropdown(dropdownId, arrowId) {
-          const dropdown = document.getElementById(dropdownId);
-          const arrow = document.getElementById(arrowId);
-
-          if (dropdown.style.maxHeight === "0px" || dropdown.style.maxHeight === "") {
-            const importDropdown = document.getElementById('importDropdown');
-            const importArrow = document.getElementById('importArrow');
-            if (importDropdown && importDropdown !== dropdown && importDropdown.style.maxHeight !== '0px' && importDropdown.style.maxHeight !== '') {
-              importDropdown.style.maxHeight = '0';
-              if (importArrow) importArrow.style.transform = 'rotate(0deg)';
-            }
-
-            dropdown.style.maxHeight = dropdown.scrollHeight + 500 + "px"; // +500 to allow room for rows
-            arrow.style.transform = "rotate(180deg)";
-          } else {
-            dropdown.style.maxHeight = "0";
-            arrow.style.transform = "rotate(0deg)";
-          }
-        }
-      </script>
-
-
-      <div class="spacer-20"></div>
-
-      <div class="schedules-header-container">
-        <h2 class="schedules-title">Schedules</h2>
-        <div class="flex-center-gap">
-          <button id="delete-schedule-btn" class="btn-remove btn-delete-schedule"><img src="../assets/delete.png"
-              alt="Delete" class="btn-icon"> DELETE</button>
-          <select id="schedule-selector" class="schedule-selector">
-            <option value="new">+ Create New Schedule</option>
-          </select>
-        </div>
-      </div>
-      <div class="courses-list single-column" id="scheduledList"></div>
-
-      <div class="save-schedule-container">
-        <div class="save-schedule-wrapper">
-          Save Schedule as:
-          <input type="text" id="schedule-name-input" class="save-input" value="">
-          <span id="schedule-units-display" class="units-display">Units: 0 / 0</span>
-          <span id="regular-status-badge" class="schedule-status-badge"></span>
-        </div>
-        <button id="save-schedule-btn" class="btn-primary btn-save" type="button"><img src="../assets/save.png"
-            alt="Save" class="btn-icon"> SAVE</button>
-      </div>
+      <div class="events-list single-column" id="scheduledList"></div>
+      <div class="save-schedule-container"><label class="save-schedule-wrapper" for="schedule-name-input">Schedule title<input type="text" id="schedule-name-input" class="save-input" value="My schedule"></label><button id="save-schedule-btn" class="btn-primary btn-save" type="button"><img src="../assets/save.png" alt="Save" class="btn-icon"> SAVE</button></div>
     </section>
   </main>
-
-  <script src="../frontend/scripts/utils.js"></script>
-  <script src="../frontend/scripts/popup.js"></script>
-  <script src="../frontend/scripts/footer.js"></script>
-  <script src="../frontend/scripts/auth.js"></script>
-  <script src="../frontend/scripts/classes.js"></script>
-  <script src="../frontend/scripts/subjects.js"></script>
+  <script src="../frontend/scripts/utils.js"></script><script src="../frontend/scripts/popup.js"></script><script src="../frontend/scripts/footer.js"></script><script src="../frontend/scripts/auth.js"></script><script src="../frontend/scripts/subjects.js"></script>
 </body>
-
 </html>

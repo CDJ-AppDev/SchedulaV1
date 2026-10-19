@@ -34,13 +34,13 @@
         <h4>1. ACCEPTANCE</h4>
         <p>By using Schedula, you agree to these Terms and Conditions. If you do not agree, please discontinue use of the service.</p>
         <h4>2. EDUCATIONAL USE</h4>
-        <p>Schedula is provided to help students plan academic schedules. Course data, availability, and institutional policies may change without notice. Always verify your final schedule with your registrar or academic office.</p>
+        <p>Schedula helps people organize personal and team schedules. Availability and shared schedule data may change, so review important plans before relying on them.</p>
         <h4>3. ACCOUNTS</h4>
         <p>You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account. Notify us promptly if you suspect unauthorized access.</p>
         <h4>4. ACCEPTABLE USE</h4>
         <p>You agree not to misuse the platform, attempt unauthorized access, interfere with service operation, or use the tool for unlawful purposes.</p>
         <h4>5. DISCLAIMER</h4>
-        <p>The service is provided &ldquo;as is&rdquo; without warranties of any kind. CDJ Builders is not liable for scheduling conflicts, registration errors, or academic outcomes resulting from use of this tool.</p>
+        <p>The service is provided &ldquo;as is&rdquo; without warranties of any kind. CDJ Builders is not liable for missed commitments or scheduling outcomes resulting from use of this tool.</p>
         <h4>6. CHANGES</h4>
         <p>We may update these terms from time to time. Continued use after changes are posted constitutes acceptance of the revised terms.</p>
         <h4>7. CONTACT</h4>
@@ -51,7 +51,7 @@
       title: 'Privacy Policy',
       body: `
         <h4>INFORMATION WE COLLECT</h4>
-        <p>We collect information you provide when creating an account (such as email address), profile and program preferences, and schedule data you save within the application.</p>
+        <p>We collect information you provide when creating an account, profile preferences, availability, and schedule data you save within the application.</p>
         <h4>HOW WE USE YOUR INFORMATION</h4>
         <p>Your information is used to authenticate your account, store your schedules, personalize your experience, and improve the reliability of the service.</p>
         <h4>DATA STORAGE AND SECURITY</h4>
@@ -70,7 +70,7 @@
       title: 'About',
       body: `
         <h4>Schedula</h4>
-        <p>Schedula () is a student-first web application by <strong>CDJ Builders</strong> as a join group project for the courses <strong>Application Development and Emerging Technologies</strong>, <strong> Information Management </strong> and <strong>Programming Languages</strong> at <strong>De La Salle University - Dasmarinas</strong>.</p>
+        <p>Schedula is a focused scheduling workspace by <strong>CDJ Builders</strong>.</p>
         <h4>What you can do</h4>
         <ul>
           <li>Build schedules with conflict detection</li>
@@ -78,7 +78,7 @@
           <li>Save, restore, and manage multiple schedule versions</li>
         </ul>
         <h4>OUR MISSION</h4>
-        <p>We built Schedula to make semester planning faster, clearer, and less stressful - so you can focus on learning instead of spreadsheet gymnastics.</p>
+        <p>We built Schedula to make time planning faster, clearer, and less stressful.</p>
         <h4>GET IN TOUCH</h4>
         <p><a href="mailto:cdj.builders.dev@gmail.com">cdj.builders.dev@gmail.com</a>.</p>
       `,

@@ -223,11 +223,8 @@
   font-family: inherit;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
-  letter-spacing: 0.01em;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 10px auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -241,17 +238,66 @@
   transform: translateY(-1px);
 }
 
-.btn-green:active {
-  transform: translateY(1.5px) scale(0.97);
-  background: linear-gradient(to bottom, #059669, #047857);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.35), 0 1px 1px rgba(16, 185, 129, 0.15);
+.btn-green:active { transform: translateY(1.5px) scale(0.97); }
+
+.btn-select {
+  background: linear-gradient(to bottom, #bfdbfe, #93c5fd);
+  border: 1px solid rgba(37, 99, 235, 0.45);
+  border-radius: var(--radius-button);
+  padding: 10px 24px;
+  color: #111827;
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+  letter-spacing: 0.01em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-.btn-green.selected {
-  background: linear-gradient(to bottom, #059669, #047857) !important;
-  border-color: #047857 !important;
+.btn-select:hover {
+  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
+  border-color: #a78bfa;
+  color: #111827;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-select:active {
+  transform: translateY(1.5px) scale(0.97);
+  background: linear-gradient(to bottom, #1d4ed8, #1e40af);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.35), 0 1px 1px rgba(37, 99, 235, 0.15);
+}
+
+.btn-select.selected {
+  background: linear-gradient(to bottom, #6d28d9, #4c1d95) !important;
+  border-color: #4c1d95 !important;
+  color: #ffffff !important;
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.1) !important;
   transform: translateY(1px) !important;
+}
+
+.plotter-schedule-item .btn-select {
+  min-height: 42px;
+  padding: 10px 24px;
+  margin: 0;
+  border-radius: var(--radius-button);
+  background: linear-gradient(to bottom, #bfdbfe, #93c5fd);
+  border-color: rgba(37, 99, 235, 0.45);
+  color: #111827;
+}
+
+.plotter-schedule-item .btn-select:hover {
+  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
+  border-color: #a78bfa;
+  color: #111827;
 }
 
 .btn-centered {
@@ -372,8 +418,8 @@
   pointer-events: none;
 }
 
-/* ── Course Blocks ──────────────────────────────────────────── */
-.course-block {
+/* ── Event Blocks ──────────────────────────────────────────── */
+.event-block {
   position: absolute;
   border-radius: 10px;
   padding: 8px;
@@ -391,11 +437,11 @@
   transition: transform 0.2s ease;
 }
 
-.course-block:hover {
+.event-block:hover {
   transform: scale(1.03);
 }
 
-.course-block .subject-code {
+.event-block .subject-code {
   font-size: 0.8rem;
   font-weight: 800;
   margin-bottom: 3px;
@@ -403,40 +449,34 @@
   letter-spacing: 0.05em;
 }
 
-.course-block .subject-name {
+.event-block .subject-name {
   margin-bottom: 4px;
   line-height: 1.2;
   font-size: 0.72rem;
 }
 
-.course-block .prof-name {
+.event-block .prof-name {
   font-style: italic;
   margin-bottom: 4px;
   font-size: 0.65rem;
   opacity: 0.9;
 }
 
-.course-block .day-text {
+.event-block .day-text {
   margin-bottom: 2px;
   font-size: 0.68rem;
 }
 
-.course-block .day-room-text {
+.event-block .day-room-text {
   margin-bottom: 2px;
   font-size: 0.68rem;
   white-space: nowrap;
 }
 
-.course-block .time-text {
+.event-block .time-text {
   white-space: nowrap;
   font-size: 0.72rem;
   font-weight: 700;
-}
-
-.course-block .room-text {
-  margin-top: 3px;
-  font-size: 0.68rem;
-  opacity: 0.9;
 }
 
 /* ─── Premium Light Mode Polishes for Plotter ─── */
@@ -448,10 +488,10 @@
 [data-theme="light"] .options-column label {
   color: var(--text) !important;
 }
-[data-theme="light"] .btn-green,
-[data-theme="light"] .plotter-schedule-item .btn-green {
-  color: #ffffff !important;
-}
+[data-theme="light"] .btn-select:not(.selected),
+[data-theme="light"] .plotter-schedule-item .btn-select:not(.selected) { color: #111827 !important; }
+[data-theme="light"] .btn-select.selected,
+[data-theme="light"] .plotter-schedule-item .btn-select.selected { color: #ffffff !important; }
 [data-theme="light"] .options-column label:hover {
   color: var(--accent) !important;
 }
